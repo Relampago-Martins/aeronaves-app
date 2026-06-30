@@ -1,11 +1,8 @@
-export type AeronaveResponse = {
-  matricula: string;
-  fabricante: string;
-  tipo_veiculo: string;
-  passageiros_maximos: number;
-  houve_ocorrencia: boolean;
-  proprietario: string;
-};
+import { Aeronave } from "@/models/aeronaves";
+
+export type AeronaveResponse = Aeronave
+
+
 
 export type AeronaveSearchResponse = string[];
 

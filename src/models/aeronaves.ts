@@ -6,9 +6,9 @@ export interface AeronaveSearchItem {
 export interface Aeronave {
   matricula: string;
   fabricante: string;
-  tipo_veiculo: string;
-  passageiros_maximos: number;
-  houve_ocorrencia: boolean;
+  tipoVeiculo: string;
+  passageirosMaximos: number;
+  houveOcorrencia: boolean;
   proprietario: string;
 }
 
@@ -17,3 +17,7 @@ export type AeronaveType = {
   value: string;
   label: string;
 };
+
+export type FiltrosEndpoint = {
+  tiposAeronaves: AeronaveType[];
+}

@@ -1,17 +1,20 @@
-import { Aeronave } from "@/models/aeronaves";
+import { Aeronave, AeronaveType, FiltrosEndpoint } from "@/models/aeronaves";
 
-const BASE_URL = "http://localhost:8001";
+const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
 
-export async function getAeronaveTypes(): Promise<any> {
-  const response = await fetch(`${BASE_URL}/aeronave-types`);
+if (!BASE_URL) {
+  throw new Error("BASE_URL is not defined in the environment variables");
+}
+
+export async function getTiposAeronaves(): Promise<AeronaveType[]> {
+  const response = await fetch(`${BASE_URL}/aeronaves/filtros`);
 
   if (!response.ok) {
-    throw new Error("Failed to load Aeronave types");
+    throw new Error("Failed to load filtros");
   }
 
-  const data = await response.json();
-
-  return data.results;
+  const data = await response.json() as FiltrosEndpoint;
+  return data.tiposAeronaves;
 }
 
 export async function searchMatriculas(
@@ -21,12 +24,12 @@ export async function searchMatriculas(
   const params = new URLSearchParams();
 
   if (type) {
-    params.append("tipo_de_veiculo", type);
+    params.append("tipoVeiculo", type);
   }
 
   params.append("search", query);
   try {
-    const response = await fetch(`${BASE_URL}/matriculas?${params.toString()}`);
+    const response = await fetch(`${BASE_URL}/aeronaves/?${params.toString()}`);
 
     const data = await response.json();
 
@@ -37,8 +40,8 @@ export async function searchMatriculas(
   }
 }
 
-export async function getAeronaveDetails(code: string): Promise<Aeronave> {
-  const response = await fetch(`${BASE_URL}/aeronaves/${code}`);
+export async function getAeronaveDetail(matricula: string): Promise<Aeronave> {
+  const response = await fetch(`${BASE_URL}/aeronaves/${matricula}/`);
 
   if (!response.ok) {
     throw new Error("Failed to load Aeronave details");
@@ -46,5 +49,5 @@ export async function getAeronaveDetails(code: string): Promise<Aeronave> {
 
   const data = await response.json();
 
-  return data.results;
+  return data;
 }

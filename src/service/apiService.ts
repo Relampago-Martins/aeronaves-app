@@ -1,6 +1,6 @@
 import { AeronaveResponse } from "../dto/aeronaves";
 
-import { searchMatriculas } from "@/api/api";
+import { getAeronaveDetail, getTiposAeronaves, searchMatriculas } from "@/api/api";
 import {
   Aeronave,
   AeronaveSearchItem,
@@ -11,9 +11,9 @@ function mapAeronave(response: AeronaveResponse): Aeronave {
   return {
     matricula: response.matricula,
     fabricante: response.fabricante,
-    tipo_veiculo: response.tipo_veiculo,
-    passageiros_maximos: response.passageiros_maximos,
-    houve_ocorrencia: response.houve_ocorrencia,
+    tipoVeiculo: response.tipoVeiculo,
+    passageirosMaximos: response.passageirosMaximos,
+    houveOcorrencia: response.houveOcorrencia,
     proprietario: response.proprietario,
   };
 }
@@ -39,8 +39,8 @@ function mapAeronaveType(response: any): AeronaveType[] {
   return out;
 }
 
-export function getAeronaveTypes(): AeronaveType[] {
-  const rawTypes = getAeronaveTypes();
+export async function getAeronaveTypes(): Promise<AeronaveType[]> {
+  const rawTypes = await getTiposAeronaves();
 
   return mapAeronaveType(rawTypes);
 }
@@ -54,7 +54,7 @@ export async function searchAeronavesMatriculas(
   return searchResults;
 }
 
-export function getAeronaveDetails(code: string): Aeronave {
-  const aeronave = getAeronaveDetails(code);
+export async function getAeronaveDetails(code: string): Promise<Aeronave> {
+  const aeronave = await getAeronaveDetail(code);
   return mapAeronave(aeronave);
 }

@@ -21,6 +21,7 @@ import {
 export default function AeronavesScreen() {
   const [types, setTypes] = useState<AeronaveType[]>([]);
   const [selectedType, setSelectedType] = useState<string>("");
+  const [selectedTypeValue, setSelectedTypeValue] = useState<string>("");
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 500);
   const [results, setResults] = useState<AeronaveSearchItem[]>([]);
@@ -55,6 +56,7 @@ export default function AeronavesScreen() {
       setTypes(availableTypes);
       setSelectedType("");
     } catch (err) {
+      console.error(err);
       setError("Could not load Aeronave types.");
     } finally {
       setLoadingTypes(false);
@@ -74,7 +76,7 @@ export default function AeronavesScreen() {
 
         const response = await searchAeronavesMatriculas(
           debouncedQuery.trim(),
-          selectedType,
+          selectedTypeValue,
         );
 
         setResults(response);
@@ -101,7 +103,8 @@ export default function AeronavesScreen() {
       const details = await getAeronaveDetails(code);
 
       setSelectedAeronave(details);
-    } catch {
+    } catch (err) {
+      console.error(err);
       setError("Failed to load Aeronave details.");
     } finally {
       setLoadingDetails(false);
@@ -143,7 +146,7 @@ export default function AeronavesScreen() {
                 contentContainerStyle={styles.filterList}
                 renderItem={({ item }) => (
                   <Pressable
-                    onPress={() => setSelectedType(item.label)}
+                    onPress={() =>{ setSelectedType(item.label); setSelectedTypeValue(item.value)}}
                     style={[
                       styles.filterChip,
                       selectedType === item.label && styles.filterChipSelected,
@@ -175,13 +178,13 @@ export default function AeronavesScreen() {
 
               <Text>Fabricante: {selectedAeronave.fabricante}</Text>
 
-              <Text>Tipo: {selectedAeronave.tipo_veiculo}</Text>
+              <Text>Tipo: {selectedAeronave.tipoVeiculo || 'Não definido'}</Text>
 
               <Text>
-                Máximo de passageiros: {selectedAeronave.passageiros_maximos}
+                Máximo de passageiros: {selectedAeronave.passageirosMaximos}
               </Text>
 
-              {selectedAeronave.houve_ocorrencia && (
+              {selectedAeronave.houveOcorrencia && (
                 <Text style={{ color: "red" }}>
                   {"Essa aeronave sofreu uma ocorrência"}
                 </Text>
